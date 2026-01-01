@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛠️ 系統後台管理</title>
+    <nav style="text-align: right; margin-bottom: 10px;">
+        <a href="index.html" class="team-link" style="font-size: 0.9rem;">⬅ 返回前台查詢</a>
+    </nav>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🛠️ 球隊管理系統 - 後台管理</h1>
+        </header>
+
+        <section class="search-card admin-theme">
+            <h3>📤 資料批次匯入</h3>
+            <div class="filter-group">
+                <label class="search-hint">請選擇匯入項目類型</label>
+                <select id="importType" class="select-import-type">
+                    <option value="player">🏃 球員名單匯入</option>
+                    <option value="game">📅 比賽賽程資料匯入</option>
+                </select>
+            </div>
+
+            <div class="file-box" onclick="document.getElementById('excelFile').click()">
+                <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" style="display: none;">
+                <div id="fileInfo">
+                    <p style="font-size: 1.2rem; margin-bottom: 5px;">點擊或拖拽 Excel 檔案至此</p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">支援格式: .xlsx, .xls, .csv</p>
+                </div>
+            </div>
+
+            <div class="search-group flex-center">
+                <button onclick="handleUpload()" class="btn-team" id="uploadBtn">解析並預覽資料</button>
+                <button onclick="resetUpload()" class="btn-clear">重置</button>
+            </div>
+
+            <div id="playerImportExample" class="example-container">
+                <div class="example-header flex-between">
+                    <span>📋 Excel 匯入格式範例 (請確保標題列完全一致)</span>
+                    <button onclick="downloadTemplate()" class="btn-download">下載範本</button>
+                </div>
+                <div class="table-responsive example-table-wrapper">
+                    <table class="data-table table-mini">
+                        <thead style="background: #f8fafc;">
+                            <tr>
+                                <th>family_id</th><th>serial_number</th><th>year</th><th>player_id</th>
+                                <th>ch_name</th><th>nickname</th><th>grade</th>
+                                <th>school_name</th><th>jersey_number</th><th>sibling</th><th>staff</th><th>status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2026001</td><td>1</td><td>2026</td><td>20260011</td>
+                                <td>王小明</td><td>Leo</td><td>四年級</td>
+                                <td>棒球國小</td><td>10</td><td>兄</td><td>否</td><td>Major/週日下午</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="example-notes">
+                    📌 <b>注意事項：</b><br>
+                    1. 標題列英文必須完全正確 (小寫、底線)。<br>
+                    2. <b>status</b> 格式請務必遵守：<code class="code-highlight">層級/時段</code> (例如 Major/週日下午)。<br>
+                    3. 若欄位無資料，請填寫 <b>NULL</b> 或保持空白。
+                </div>
+            </div>
+
+            <div id="statusMsg" class="text-center mt-20" style="display: none;">
+                <span class="status-badge" id="statusBadge"></span>
+            </div>
+        </section>
+
+        <section id="previewSection" class="result-section" style="display: none;">
+            <div class="section-header team-theme flex-between">
+                <span>📋 匯入資料預覽 (確認後才正式寫入)</span>
+                <button onclick="confirmImport()" class="btn-team btn-confirm-import">確認匯入資料庫</button>
+            </div>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Family ID</th><th>序號</th><th>年份</th><th>球員 ID</th>
+                            <th>中文姓名</th><th>綽號</th><th>年級</th>
+                            <th>學校</th><th>背號</th><th>兄弟姐妹</th><th>中大教職人員</th><th>狀態</th>
+                        </tr>
+                    </thead>
+                    <tbody id="previewBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="playerSearchCard" class="search-card">
+            <h3>🔍 球員名單簡易查詢</h3>
+
+            <div id="detailSummaryPanel" class="summary-panel">
+                <label class="search-hint summary-label">📊 各時段報名統計</label>
+                <div id="detailSummaryBar" class="flex-wrap mt-10"></div>
+            </div>
+
+            <div class="filter-group">
+                <label class="search-hint">快速過濾</label>
+                <div class="flex-gap">
+                    <input type="number" id="yearGlobal" value="2025" class="input-year">
+                    <select id="statusFilterGlobal" class="select-status">
+                        <option value="">-- 所有時段/時段 --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="search-group">
+                <button onclick="handleSearchGlobal()" class="btn-team">執行查詢</button>
+                <button onclick="clearGlobalSearch()" class="btn-clear">清除結果</button>
+            </div>
+        </section>
+
+        <section id="resultSectionGlobal" class="result-section" style="display:none;">
+            <div id="headerGlobal" class="section-header team-theme">
+                <span id="titleGlobal">搜尋結果</span>
+            </div>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead id="headGlobal"></thead>
+                    <tbody id="bodyGlobal"></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/admin_view.js"></script>
+</body>
+</html>

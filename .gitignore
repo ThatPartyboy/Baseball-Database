@@ -1,0 +1,25 @@
+# 1. 忽略 Node.js 依賴套件 (這非常大，且可以用 npm install 重新產生)
+node_modules/
+
+# 2. 忽略你專案中的上傳暫存目錄 (不應上傳別人的 Excel 測試檔)
+uploads/*
+# 但保留資料夾本身 (建立一個 .gitkeep 在裡面可以讓 Git 追蹤空目錄)
+!uploads/.gitkeep
+
+# 3. 忽略環境變數檔案 (包含資料庫密碼等機密)
+.env
+
+# 4. 忽略 Python 虛擬環境 (如果有使用的話)
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+
+# 5. 忽略日誌檔案
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 6. 忽略系統產生的雜物
+.DS_Store
+Thumbs.db

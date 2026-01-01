@@ -1,0 +1,118 @@
+/* --- 後台管理專用樣式表 --- */
+
+/* 主題顏色微調 */
+.admin-theme {
+    border-top-color: var(--primary-blue) !important;
+}
+
+/* 檔案上傳框 */
+.file-box {
+    border: 2px dashed #cbd5e0;
+    padding: 30px;
+    text-align: center;
+    border-radius: var(--border-radius);
+    background: #f8fafc;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.file-box:hover {
+    border-color: var(--accent-blue);
+    background: var(--light-blue-hover);
+}
+
+/* 狀態標籤 */
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.status-loading { background: #ebf8ff; color: #3182ce; }
+.status-success { background: #f0fff4; color: #38a169; }
+.status-error   { background: #fff5f5; color: #e53e3e; }
+
+/* 佈局輔助 */
+.text-center { text-align: center; }
+.mb-20 { margin-bottom: 20px; }
+.mt-20 { margin-top: 20px; }
+.flex-center { display: flex; justify-content: center; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.flex-gap { display: flex; gap: 10px; }
+.flex-wrap { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* 匯入格式範例區塊 */
+.example-container {
+    margin: 20px 0;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.example-header {
+    background: #edf2f7;
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--primary-blue);
+}
+
+.example-table-wrapper {
+    padding: 10px;
+    background: white;
+}
+
+.table-mini {
+    font-size: 12px !important;
+    margin-bottom: 0 !important;
+}
+
+.example-notes {
+    padding: 10px 15px;
+    font-size: 0.8rem;
+    color: #718096;
+    border-top: 1px dashed #e2e8f0;
+    line-height: 1.6;
+}
+
+.code-highlight {
+    color: var(--warning-orange);
+    font-weight: bold;
+}
+
+/* 統計面板 */
+.summary-panel {
+    background: #f1f5f9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.summary-label {
+    font-weight: bold;
+    color: var(--primary-blue);
+}
+
+/* 控制元件寬度 */
+.select-import-type { max-width: 300px; margin-bottom: 15px; }
+.input-year { width: 120px; }
+.select-status { width: 200px; }
+
+/* 下載與確認按鈕特殊色 */
+.btn-download {
+    background: white;
+    border: 1px solid var(--accent-blue);
+    color: var(--accent-blue);
+    padding: 2px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.btn-confirm-import {
+    background-color: var(--warning-orange) !important;
+    border: 1px solid white !important;
+}

@@ -1,0 +1,432 @@
+/* ==========================================================================
+   1. 定義變數與基礎設定 (Variables & Base)
+   ========================================================================== */
+:root {
+    /* 核心色彩 */
+    --primary-blue: #2c3e50;
+    --accent-blue: #3498db;
+    --success-green: #27ae60;
+    --warning-orange: #e67e22;
+    --danger-red: #c53030;
+
+    /* 背景與邊框 */
+    --bg-color: #f4f7f6;
+    --card-bg: #ffffff;
+    --border-color: #e0e6ed;
+    --light-blue-hover: #f1f9ff;
+
+    /* 文字顏色 */
+    --text-main: #333333;
+    --text-muted: #888888;
+    --text-light: #ffffff;
+
+    /* 物理規範 */
+    --border-radius: 12px;
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+header h1 {
+    text-align: center;
+    color: var(--primary-blue);
+    margin: 20px 0 40px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+/* ==========================================================================
+   2. 卡片組件 (Search Cards)
+   ========================================================================== */
+.search-card {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 25px;
+    border-top: 5px solid var(--accent-blue);
+    transition: var(--transition);
+}
+
+.search-card:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+/* 不同卡片的主題色 */
+.team-specific-card {
+    border-top-color: var(--success-green);
+}
+
+.game-specific-card {
+    border-top-color: var(--warning-orange);
+}
+
+h3 {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--primary-blue);
+}
+
+.search-hint {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    display: block;
+}
+
+/* ==========================================================================
+   3. 表單與按鈕 (Forms & Buttons)
+   ========================================================================== */
+.filter-group {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #ddd;
+}
+
+.search-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+input,
+select {
+    padding: 10px 15px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    background-color: #fff;
+    transition: var(--transition);
+}
+
+input:focus,
+select:focus {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+}
+
+/* 輸入框寬度分配 */
+select {
+    flex: 1;
+    min-width: 150px;
+    cursor: pointer;
+}
+
+input {
+    flex: 2;
+    min-width: 200px;
+}
+
+#yearGlobal {
+    width: 120px;
+    flex: none;
+}
+
+button {
+    padding: 10px 25px;
+    background-color: var(--accent-blue);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+    min-width: 120px;
+    white-space: nowrap;
+}
+
+button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+button:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-team {
+    background-color: var(--success-green);
+}
+
+/* ==========================================================================
+   4. 表格與結果顯示 (Result & Data Tables)
+   ========================================================================== */
+.result-section {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow-sm);
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.section-header {
+    padding: 18px 24px;
+    font-weight: 700;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 標題列漸層 */
+.team-theme {
+    background: linear-gradient(135deg, var(--primary-blue), #34495e);
+}
+
+.person-theme {
+    background: linear-gradient(135deg, var(--success-green), #2ecc71);
+}
+
+.game-theme {
+    background: linear-gradient(135deg, #1e3a5f, #2c5282) !important;
+}
+
+/* 基礎表格設定 */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th {
+    background-color: #f8f9fa;
+    color: #475569;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 16px;
+    text-align: center;
+    border-bottom: 2px solid #eee;
+    white-space: nowrap;
+}
+
+.data-table td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    font-size: 15px;
+    color: #4a5568;
+}
+
+.data-table tr:hover {
+    background-color: var(--light-blue-hover);
+}
+
+/* ==========================================================================
+   5. 賽程表專用樣式 (Game Table Specifics)
+   ========================================================================== */
+.game-table {
+    min-width: 1100px;
+    /* 防止寬表格過度擠壓 */
+}
+
+.game-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background-color: #f8fafc;
+}
+
+.game-table td {
+    white-space: nowrap;
+    /* 強制文字不換行，解決垂直文字問題 */
+    padding: 12px 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* 欄位寬度控制 */
+.col-wide {
+    min-width: 140px;
+}
+
+.col-team {
+    min-width: 130px;
+    font-weight: 700;
+}
+
+.col-score {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--danger-red);
+}
+
+/* 比賽隊伍顏色標籤 */
+.team-red {
+    color: var(--danger-red) !important;
+    background-color: #fff5f5 !important;
+    border-left: 4px solid #fc8181;
+}
+
+.team-black {
+    color: #1a202c !important;
+    background-color: #edf2f7 !important;
+    border-left: 4px solid #4a5568;
+}
+
+/* 比賽時間與地點 */
+.time-range {
+    font-family: 'Segoe UI', monospace;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.time-sep {
+    color: #a0aec0;
+    margin: 0 4px;
+}
+
+/* 日期與地點的容器 */
+.datetime-info {
+    line-height: 1.0;
+    /* 縮小行高，這是縮小間距最有效的方法 */
+    text-align: center;
+    padding: 2px 0;
+    /* 稍微調整內距 */
+}
+
+/* 日期文字 */
+.date-text {
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 2px;
+    /* 控制日期下方的微小間距 */
+}
+
+/* 地點標籤 */
+.place-tag {
+    display: inline-block;
+    margin-top: 4px;
+    /* 將原本的 4px 改為 0px */
+    font-size: 11px;
+    /* 稍微縮小字級，讓視覺比例更緊湊 */
+    color: #718096;
+    background: #edf2f7;
+    padding: 1px 6px;
+    /* 縮小標籤內的上下內距 */
+    border-radius: 4px;
+}
+
+/* ==========================================================================
+   6. 工具元件與動畫 (Utilities & Animations)
+   ========================================================================== */
+.divider {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #dcdde1, transparent);
+    margin: 50px 0;
+}
+
+.team-link {
+    color: var(--accent-blue);
+    text-decoration: none;
+    font-weight: bold;
+    border-bottom: 1.5px dashed var(--accent-blue);
+}
+
+.team-link:hover {
+    color: #2980b9;
+    border-bottom-style: solid;
+}
+
+.loading-spinner {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    color: var(--text-muted);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 捲軸美化 */
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+}
+
+/* ==========================================================================
+   7. 響應式設計 (RWD)
+   ========================================================================== */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    header h1 {
+        font-size: 22px;
+    }
+
+    .search-card {
+        padding: 20px;
+    }
+
+    .search-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    input,
+    select,
+    button {
+        width: 100%;
+        flex: none;
+    }
+
+    #yearGlobal {
+        width: 100%;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 12px 8px;
+        font-size: 14px;
+    }
+}
