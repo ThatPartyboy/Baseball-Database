@@ -92,7 +92,7 @@ async function initializeSeasonDropdowns(selectIds) {
 function setSubmitting(btnId, isSubmitting) {
     const btn = document.getElementById(btnId);
     btn.disabled = isSubmitting;
-    btn.innerHTML = isSubmitting ? "搜尋中..." : (btnId === 'btnGlobal' ? "執行搜尋" : "查詢球隊");
+    btn.innerHTML = isSubmitting ? "搜尋中..." : (btnId === 'btnGlobal' ? "執行搜尋" : "查詢賽事");
 }
 
 function maskName(nameStr) {
@@ -176,13 +176,14 @@ async function handleSearchGlobal() {
                             <tr>
                                 <td>${p.year}</td>
                                 <td>${p.parent_id}</td>
+                                <td><strong>${maskName(p.ch_name)}</strong></td>
                                 <td><strong>${p.nickname ?? "無家長資料"}</strong></td>
                                 <td>${maskName(matchedChildren) || '無'}</td>
                             </tr>`;
                 });
 
                 renderRelatedTable("👨‍👩‍👧 關聯家長聯絡資訊",
-                    "<tr><th>年份</th><th>家長 ID</th><th>暱稱</th><th>小孩</th></tr>",
+                    "<tr><th>年份</th><th>家長 ID</th><th>中文姓名</th><th>暱稱</th><th>小孩</th></tr>",
                     tableBodyRows // 這裡傳入的是已經處理好的 HTML 字串陣列
                 );
             }
@@ -192,10 +193,11 @@ async function handleSearchGlobal() {
         } else {
             // --- 主表顯示家長 ---
             renderMainTable("👨‍👩‍👧 家長名單",
-                "<tr><th>年份</th><th>家長ID</th><th>暱稱</th><th>狀態</th></tr>",
+                "<tr><th>年份</th><th>家長ID</th><th>中文姓名</th><th>暱稱</th><th>狀態</th></tr>",
                 parents.map(item => `<tr>
                                         <td>${item.year}</td>
                                         <td>${item.parent_id}</td>
+                                        <td><strong>${maskName(item.ch_name)}</strong></td>
                                         <td><strong>${item.nickname ?? "無家長資料"}</strong></td>
                                         <td>${item.status}</td>
                                     </tr>`)
@@ -292,11 +294,41 @@ async function renderRelativeTable(type, familyID) {
 
 }
 
+/**
+ * 處理球隊查詢
+ */
+document.getElementById('yearTeamOnly').addEventListener('click', updateTeamFromYearOptions);
+document.getElementById('levelTeamOnly').addEventListener('click', updateTeamFromYearOptions);
+
+async function updateTeamFromYearOptions() {
+
+    const year = document.getElementById('yearTeamOnly').value;
+    const level = document.getElementById('levelTeamOnly').value;
+    const selectTeam = document.getElementById('selectTeamOnly');
+
+    // 清空舊的選項
+    selectTeam.innerHTML = '<option value="">-- 所有隊伍 --</option>';
+
+    try {
+        const response = await fetch(`/api/team-by-year-level?year=${encodeURIComponent(year)}&level=${encodeURIComponent(level)}`);
+        const teams = await response.json();
+
+        teams.forEach(team => {
+            const option = document.createElement('option');
+            option.value = team.team_id;
+            option.textContent = team.team_id;
+            selectTeam.appendChild(option);
+        });
+    } catch (err) {
+        console.error("無法取得賽別列表:", err);
+    }
+}
+
 // --- 2. 球隊專門查詢邏輯 ---
 async function handleSearchTeamOnly() {
-    const keyword = document.getElementById('keywordTeamOnly').value;
     const year = document.getElementById('yearTeamOnly').value;
     const level = document.getElementById('levelTeamOnly').value; // 取得選取的層級
+    const keyword = document.getElementById('selectTeamOnly').value;
 
     document.getElementById('personSection').style.display = 'none';
     document.getElementById('inRoleSection').style.display = 'none';
@@ -444,11 +476,47 @@ function backToTeamList() {
     teamSection.scrollIntoView({ behavior: 'smooth' });
 }
 
-// --- 4. 賽程查詢邏輯 ---
-async function handleSearchGame() {
-    const keyword = document.getElementById('keywordGameSearch').value;
+/**
+ * 處理賽事查詢
+ */
+document.getElementById('seasonGameSearch').addEventListener('click', updateTeamFromSeasonOptions);
+document.getElementById('levelGameSearch').addEventListener('click', updateTeamFromSeasonOptions);
+
+async function clearGameOptions() {
+    const level = document.getElementById('levelGameSearch');
+    const selectTeam = document.getElementById('selectGameSearch');
+    // 清空舊的選項
+    // level.innerHTML = '<option value="">-- 所有層級 --</option>';
+    // selectTeam.innerHTML = '<option value="">-- 所有隊伍 --</option>';
+}
+
+async function updateTeamFromSeasonOptions() {
+
     const season = document.getElementById('seasonGameSearch').value;
     const level = document.getElementById('levelGameSearch').value;
+    const selectTeam = document.getElementById('selectGameSearch');
+    
+    // 清空舊的選項
+    selectTeam.innerHTML = '<option value="">-- 所有隊伍 --</option>';
+
+    try {
+        const response = await fetch(`/api/team-by-season-level?season=${encodeURIComponent(season)}&level=${encodeURIComponent(level)}`);
+        const teams = await response.json();
+        teams.forEach(team => {
+            const option = document.createElement('option');
+            option.value = team.h_team_id;
+            option.textContent = team.h_team_id;
+            selectTeam.appendChild(option);
+        });
+    } catch (err) {
+        console.error("無法取得賽別列表:", err);
+    }
+}
+// --- 4. 賽程查詢邏輯 ---
+async function handleSearchGame() {
+    const season = document.getElementById('seasonGameSearch').value;
+    const level = document.getElementById('levelGameSearch').value;
+    const keyword = document.getElementById('selectGameSearch').value;
 
     setSubmitting('btnGameSearch', true);
     try {
@@ -556,7 +624,7 @@ async function fetchUmpireRanking() {
 /**
  * 處理排名查詢
  */
-document.getElementById('seasonRank').addEventListener('change', updateRoundOptions);
+document.getElementById('seasonRank').addEventListener('click', updateRoundOptions);
 
 async function updateRoundOptions() {
 
@@ -582,7 +650,7 @@ async function updateRoundOptions() {
     }
 }
 
-document.getElementById('roundRank').addEventListener('change', updateLevelOptions);
+document.getElementById('roundRank').addEventListener('click', updateLevelOptions);
 async function updateLevelOptions() {
 
     const season = document.getElementById('seasonRank').value;
@@ -692,7 +760,7 @@ function clearTeamSearch() {
     // 1. 重置輸入欄位
     document.getElementById('yearTeamOnly').value = "";
     document.getElementById('levelTeamOnly').selectedIndex = 0; // 重置層級選單
-    document.getElementById('keywordTeamOnly').value = "";
+    document.getElementById('selectTeamOnly').value = "";
 
     // 2. 隱藏所有相關結果區塊 (包含點擊球隊後出現的人員名單)
     document.getElementById('teamSectionOnly').style.display = 'none';
@@ -708,7 +776,7 @@ function clearGameSearch() {
     // 1. 重置輸入欄位
     document.getElementById('levelGameSearch').selectedIndex = 0; // 重置層級選單
     document.getElementById('seasonGameSearch').selectedIndex = 0;
-    document.getElementById('keywordGameSearch').value = "";
+    document.getElementById('selectGameSearch').value = "";
     // 2. 隱藏結果區塊
     document.getElementById('gameSectionOnly').style.display = 'none';
     document.getElementById('umpireSection').style.display = 'none';

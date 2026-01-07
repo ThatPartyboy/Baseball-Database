@@ -31,7 +31,7 @@
                     <option value="player">🏃 查詢球員</option>
                     <option value="parent">👨‍👩‍👧 查詢家長</option>
                 </select>
-                <input type="text" id="keywordGlobal" placeholder="輸入 ID 或 姓名..." style="flex-grow: 1;">
+                <input type="text" id="keywordGlobal" placeholder="輸入 完整ID 或 姓名..." style="flex-grow: 1;">
                 <button id="btnGlobal" onclick="handleSearchGlobal()" class="btn-team">執行搜尋</button>
                 <button type="button" class="btn-clear" onclick="clearGlobalSearch()">清除結果</button>
             </div>
@@ -75,7 +75,9 @@
                 </div>
             </div>
             <div class="search-group">
-                <input type="text" id="keywordTeamOnly" placeholder="輸入球隊 ID 或 名稱..." style="flex-grow: 1;">
+                <select id="selectTeamOnly" style="width: 160px;">
+                        <option value="">-- 所有隊伍 --</option>
+                 </select>
                 <button id="btnTeam" onclick="handleSearchTeamOnly()" class="btn-team">查詢球隊</button>
                 <button type="button" class="btn-clear" onclick="clearTeamSearch()">清除結果</button>
             </div>
@@ -146,7 +148,9 @@
                 </div>
             </div>
             <div class="search-group">
-                <input type="text" id="keywordGameSearch" placeholder="輸入球隊 ID 或 名稱 或 英文名稱..." style="flex-grow: 1;">
+                <select id="selectGameSearch" style="width: 160px;">
+                        <option value="">-- 所有隊伍 --</option>
+                 </select>
                 <button id="btnGameSearch" onclick="handleSearchGame()" class="btn-team">查詢賽事</button>
                 <button onclick="fetchUmpireRanking()" class="btn-team">主審參與排名</button>
                 <button type="button" class="btn-clear" onclick="clearGameSearch()">清除結果</button>
@@ -186,7 +190,6 @@
                 <table class="data-table game-table">
                     <thead>
                         <tr>
-                            <th>年份</th>
                             <th>賽季</th>
                             <th>場序</th>
                             <th>層級</th>

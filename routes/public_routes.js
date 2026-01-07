@@ -40,8 +40,8 @@ router.get('/search', async (req, res) => {
 
         } else if (type === 'parent') {
             // --- 查詢家長模式 ---
-            let paSql = `SELECT * FROM parent WHERE (parent_id = ? OR nickname LIKE ?)`;
-            let paParams = [keyword, `%${keyword}%` || ''];
+            let paSql = `SELECT * FROM parent WHERE (parent_id = ? OR ch_name LIKE ? OR nickname LIKE ?)`;
+            let paParams = [keyword, `%${keyword}%`, `%${keyword}%` || ''];
 
             if (year && year.trim() !== "") {
                 paSql += ` AND year = ?`;
@@ -99,8 +99,8 @@ router.get('/search-team', async (req, res) => {
         }
 
         if (keyword && keyword.trim() !== "") {
-            sql += ` AND (team_id = ? OR team_name LIKE ?)`;
-            params.push(keyword, `%${keyword}%`);
+            sql += ` AND (team_id = ?)`;
+            params.push(keyword);
         }
 
         const [rows] = await db.query(sql, params);
@@ -169,7 +169,6 @@ router.get('/search-game', async (req, res) => {
     const { keyword, season, level } = req.query;
 
     try {
-        // 1. 基本 SQL 結構：使用別名 lg, guest, home
         let sql = `
             SELECT 
                 lg.*, 
@@ -195,9 +194,8 @@ router.get('/search-game', async (req, res) => {
 
         // 3. 關鍵字搜尋：修正為搜尋聯集後的「球隊名稱」
         if (keyword && keyword.trim() !== "") {
-            // 我們搜尋：比賽ID、先攻球隊名、後攻球隊名
-            sql += ` AND (lg.game_id = ? OR guest.team_name LIKE ? OR home.team_name LIKE ?)`;
-            params.push(keyword, `%${keyword}%`, `%${keyword}%`);
+            sql += ` AND (guest.team_id = ? OR home.team_id = ?)`;
+            params.push(keyword, keyword);
         }
 
         // 4. 排序：賽季 -> 自然排序場序
@@ -376,6 +374,28 @@ router.get('/level-by-round', async (req, res) => {
         res.json(levels);
     } catch (err) {
         res.status(500).json({ error: "無法讀取層級資料" });
+    }
+});
+
+router.get('/team-by-year-level', async (req, res) => {
+    const { year, level } = req.query;
+    try {
+        const sql = `SELECT DISTINCT team_id FROM team WHERE year = ? AND level = ? ORDER BY team_id ASC`;
+        const [rows] = await db.query(sql, [year, level]);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: "無法讀取球隊資料" });
+    }
+});
+
+router.get('/team-by-season-level', async (req, res) => {
+    const { season, level } = req.query;
+    try {
+        const sql = `SELECT DISTINCT h_team_id FROM league_game WHERE season = ? AND level = ? ORDER BY h_team_id ASC`;
+        const [rows] = await db.query(sql, [season, level]);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: "無法讀取球隊資料" });
     }
 });
 
